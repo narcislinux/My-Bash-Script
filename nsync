@@ -1,0 +1,61 @@
+#!/bin/bash
+#It's for sync my data with rsync
+
+#argoument
+b=$1
+#argoument
+c=$2
+
+if [ -z $b ];then
+  b=$(cut -d ":" -f1 /home/narcis/.nsync/nsync.path)
+  echo "Defult1 ($b) ?";read  i
+  if [ "$i" = "n" ];then
+      echo "so what (first)? ";read  b
+   fi
+fi
+if [ -z $c ];then
+  c=$(cut -d ":" -f2 /home/narcis/.nsync/nsync.path)
+  echo "Defult2 ($c) ?" ;read i
+  if [ "$i" = "n" ];then
+      echo "so what (second)? ";read  c
+  fi
+fi
+
+#check command
+
+echo "rsync $b $c ?(y,n,c)" ;read j
+if [ "$j" = "c" ];then
+   d=$b
+   b=$c
+   c=$d
+fi
+echo 
+echo " ####"
+echo " ####Final:rsync $b $c "
+echo " ####"
+echo 
+echo "check?"
+read ch
+if [ "$ch" = "y" ]; then
+  rsync -avn --delete  $b $c
+  echo "Are you ok?(y/n)";read cho
+else
+  echo "run?(y/n)";read  cho
+  if [ "$cho" = "y" ];then
+   rsync -av --delete  $b $c
+  fi
+fi
+
+
+
+
+#save option and argoument
+if [ $? -eq 0 ];then
+  echo "$b : $c" >/home/narcis/.nsync/nsync.path
+else
+ echo "You have problem ;) !"
+fi
+
+
+
+
